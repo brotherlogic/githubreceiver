@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package githubreceiver;
+
+message Config {
+  int64 time_between_queue_process = 1;
+}
