@@ -59,20 +59,112 @@ func (m *Config) GetTimeBetweenQueueProcess() int64 {
 	return 0
 }
 
+type Ping struct {
+	Action               string   `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"`
+	Issue                *Issue   `protobuf:"bytes,2,opt,name=issue,proto3" json:"issue,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Ping) Reset()         { *m = Ping{} }
+func (m *Ping) String() string { return proto.CompactTextString(m) }
+func (*Ping) ProtoMessage()    {}
+func (*Ping) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cc7162ad0e80472c, []int{1}
+}
+
+func (m *Ping) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Ping.Unmarshal(m, b)
+}
+func (m *Ping) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Ping.Marshal(b, m, deterministic)
+}
+func (m *Ping) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Ping.Merge(m, src)
+}
+func (m *Ping) XXX_Size() int {
+	return xxx_messageInfo_Ping.Size(m)
+}
+func (m *Ping) XXX_DiscardUnknown() {
+	xxx_messageInfo_Ping.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Ping proto.InternalMessageInfo
+
+func (m *Ping) GetAction() string {
+	if m != nil {
+		return m.Action
+	}
+	return ""
+}
+
+func (m *Ping) GetIssue() *Issue {
+	if m != nil {
+		return m.Issue
+	}
+	return nil
+}
+
+type Issue struct {
+	Url                  string   `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Issue) Reset()         { *m = Issue{} }
+func (m *Issue) String() string { return proto.CompactTextString(m) }
+func (*Issue) ProtoMessage()    {}
+func (*Issue) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cc7162ad0e80472c, []int{2}
+}
+
+func (m *Issue) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Issue.Unmarshal(m, b)
+}
+func (m *Issue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Issue.Marshal(b, m, deterministic)
+}
+func (m *Issue) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Issue.Merge(m, src)
+}
+func (m *Issue) XXX_Size() int {
+	return xxx_messageInfo_Issue.Size(m)
+}
+func (m *Issue) XXX_DiscardUnknown() {
+	xxx_messageInfo_Issue.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Issue proto.InternalMessageInfo
+
+func (m *Issue) GetUrl() string {
+	if m != nil {
+		return m.Url
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*Config)(nil), "githubreceiver.Config")
+	proto.RegisterType((*Ping)(nil), "githubreceiver.Ping")
+	proto.RegisterType((*Issue)(nil), "githubreceiver.Issue")
 }
 
 func init() { proto.RegisterFile("githubreceiver.proto", fileDescriptor_cc7162ad0e80472c) }
 
 var fileDescriptor_cc7162ad0e80472c = []byte{
-	// 114 bytes of a gzipped FileDescriptorProto
+	// 181 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x49, 0xcf, 0x2c, 0xc9,
 	0x28, 0x4d, 0x2a, 0x4a, 0x4d, 0x4e, 0xcd, 0x2c, 0x4b, 0x2d, 0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9,
 	0x17, 0xe2, 0x43, 0x15, 0x55, 0x72, 0xe5, 0x62, 0x73, 0xce, 0xcf, 0x4b, 0xcb, 0x4c, 0x17, 0xb2,
 	0xe6, 0x92, 0x2a, 0xc9, 0xcc, 0x4d, 0x8d, 0x4f, 0x4a, 0x2d, 0x29, 0x4f, 0x4d, 0xcd, 0x8b, 0x2f,
 	0x2c, 0x4d, 0x2d, 0x4d, 0x8d, 0x2f, 0x28, 0xca, 0x4f, 0x4e, 0x2d, 0x2e, 0x96, 0x60, 0x54, 0x60,
-	0xd4, 0x60, 0x0e, 0x12, 0x07, 0xa9, 0x70, 0x82, 0x28, 0x08, 0x04, 0xc9, 0x07, 0x40, 0xa4, 0x93,
-	0xd8, 0xc0, 0xa6, 0x1b, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x23, 0x86, 0x9e, 0xc1, 0x75, 0x00,
-	0x00, 0x00,
+	0xd4, 0x60, 0x0e, 0x12, 0x07, 0xa9, 0x70, 0x82, 0x28, 0x08, 0x04, 0xc9, 0x07, 0x40, 0xa4, 0x95,
+	0xbc, 0xb9, 0x58, 0x02, 0x32, 0xf3, 0xd2, 0x85, 0xc4, 0xb8, 0xd8, 0x12, 0x93, 0x4b, 0x32, 0xf3,
+	0xf3, 0xc0, 0x1a, 0x38, 0x83, 0xa0, 0x3c, 0x21, 0x6d, 0x2e, 0xd6, 0xcc, 0xe2, 0xe2, 0xd2, 0x54,
+	0x09, 0x26, 0x05, 0x46, 0x0d, 0x6e, 0x23, 0x51, 0x3d, 0x34, 0xc7, 0x79, 0x82, 0x24, 0x83, 0x20,
+	0x6a, 0x94, 0x24, 0xb9, 0x58, 0xc1, 0x7c, 0x21, 0x01, 0x2e, 0xe6, 0xd2, 0xa2, 0x1c, 0xa8, 0x51,
+	0x20, 0x66, 0x12, 0x1b, 0xd8, 0x17, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x1a, 0x0d, 0xab,
+	0x76, 0xdd, 0x00, 0x00, 0x00,
 }

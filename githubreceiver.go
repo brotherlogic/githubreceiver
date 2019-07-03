@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -98,6 +99,14 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.Log(fmt.Sprintf("%v", string(body)))
+
+	var ping *pb.Ping
+	err = json.Unmarshal([]byte(body), &ping)
+	if err != nil {
+		s.Log(fmt.Sprintf("Error unmarshalling JSON: %v", err))
+	}
+
+	s.Log(fmt.Sprintf("Derived %v", ping))
 }
 
 func (s *Server) serveUp(port int32) {
