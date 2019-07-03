@@ -1,8 +1,17 @@
 package main
 
-import pb "github.com/brotherlogic/githubreceiver/proto"
+import (
+	"fmt"
 
-func (s *Server) processPing(p *pb.Ping) error {
-	//Do nothing
+	pb "github.com/brotherlogic/githubreceiver/proto"
+	"golang.org/x/net/context"
+)
+
+func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
+	if ping.Ref == "/refs/heads/master" {
+		s.Log(fmt.Sprintf("Starting build for %v", ping.Repository.Name))
+		s.builder.build(ctx, ping.Repository.Name)
+	}
+
 	return nil
 }
