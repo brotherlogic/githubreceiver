@@ -13,7 +13,7 @@ type testBuilder struct {
 	builds int
 }
 
-func (t *testBuilder) build(ctx context.Context, name string) error {
+func (t *testBuilder) build(ctx context.Context, name, fullName string) error {
 	t.builds++
 	return nil
 }

@@ -21,14 +21,14 @@ import (
 )
 
 type builder interface {
-	build(ctx context.Context, name string) error
+	build(ctx context.Context, name, fullName string) error
 }
 
 type prodBuilder struct {
 	dial func(server string) (*grpc.ClientConn, error)
 }
 
-func (p *prodBuilder) build(ctx context.Context, name string) error {
+func (p *prodBuilder) build(ctx context.Context, name, fullName string) error {
 	conn, err := p.dial("buildserver")
 	if err != nil {
 		return err
@@ -36,7 +36,7 @@ func (p *prodBuilder) build(ctx context.Context, name string) error {
 	defer conn.Close()
 
 	client := pbbs.NewBuildServiceClient(conn)
-	_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/brotherlogic/" + name}})
+	_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/" + fullName}})
 
 	return err
 
