@@ -107,6 +107,10 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.Log(fmt.Sprintf("Derived %v", ping))
+
+	if ping.Ref == "/refs/head/master" {
+		s.Log(fmt.Sprintf("Starting build for %v", ping.Repository.Name))
+	}
 }
 
 func (s *Server) serveUp(port int32) {
