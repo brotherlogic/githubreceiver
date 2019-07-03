@@ -15,6 +15,7 @@ message Ping {
 
 message Repository {
   string name = 1;
+  string full_name = 2;
 }
 
 message Issue {
