@@ -13,9 +13,34 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
+	pbbs "github.com/brotherlogic/buildserver/proto"
 	pb "github.com/brotherlogic/githubreceiver/proto"
+	pbgbs "github.com/brotherlogic/gobuildslave/proto"
 	pbg "github.com/brotherlogic/goserver/proto"
+	"github.com/brotherlogic/goserver/utils"
 )
+
+type builder interface {
+	build(ctx context.Context, name string) error
+}
+
+type prodBuilder struct {
+	dial func(server string) (*grpc.ClientConn, error)
+}
+
+func (p *prodBuilder) build(ctx context.Context, name string) error {
+	conn, err := p.dial("buildserver")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbbs.NewBuildServiceClient(conn)
+	_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/brotherlogic/" + name}})
+
+	return err
+
+}
 
 const (
 	// KEY - where we store sale info
@@ -27,6 +52,7 @@ type Server struct {
 	*goserver.GoServer
 	config       *pb.Config
 	webhookcount int64
+	builder      builder
 }
 
 // Init builds the server
@@ -35,6 +61,7 @@ func Init() *Server {
 		GoServer: &goserver.GoServer{},
 		config:   &pb.Config{TimeBetweenQueueProcess: 60},
 	}
+	s.builder = &prodBuilder{dial: s.DialMaster}
 	return s
 }
 
@@ -108,9 +135,9 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 
 	s.Log(fmt.Sprintf("Derived %v", ping))
 
-	if ping.Ref == "/refs/head/master" {
-		s.Log(fmt.Sprintf("Starting build for %v", ping.Repository.Name))
-	}
+	ctx, cancel := utils.BuildContext("githubreceiver", "pingprocess")
+	defer cancel()
+	s.processPing(ctx, ping)
 }
 
 func (s *Server) serveUp(port int32) {
