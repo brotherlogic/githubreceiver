@@ -41,7 +41,7 @@ func TestBasicBuildPing(t *testing.T) {
 	tb := &testBuilder{}
 	s.builder = tb
 
-	err := s.processPing(context.Background(), &pb.Ping{Ref: "/refs/heads/master", Repository: &pb.Repository{Name: "test"}})
+	err := s.processPing(context.Background(), &pb.Ping{Ref: "refs/heads/master", Repository: &pb.Repository{Name: "test"}})
 
 	if err != nil {
 		t.Errorf("Process has failed: %v", err)
