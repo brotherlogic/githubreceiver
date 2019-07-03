@@ -9,6 +9,12 @@ message Config {
 message Ping {
   string action = 1;
   Issue issue = 2;
+  string ref = 3;
+  Repository repository = 4;
+}
+
+message Repository {
+  string name = 1;
 }
 
 message Issue {
