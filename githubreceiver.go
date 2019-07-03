@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
 
 	"github.com/brotherlogic/goserver"
 	"github.com/brotherlogic/keystore/client"
@@ -23,7 +24,8 @@ const (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	config *pb.Config
+	config       *pb.Config
+	webhookcount int64
 }
 
 // Init builds the server
@@ -79,7 +81,22 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
-	return []*pbg.State{}
+	return []*pbg.State{
+		&pbg.State{Key: "web_hooks", Value: s.webhookcount},
+	}
+}
+
+func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
+	s.Log(fmt.Sprintf("Received web ping"))
+	s.webhookcount++
+}
+
+func (s *Server) serveUp(port int32) {
+	http.HandleFunc("/githubwebhook", s.githubwebhook)
+	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
@@ -97,6 +114,8 @@ func main() {
 	server.Register = server
 	server.RegisterServer("githubreceiver", false)
 
-	server.Log("Starting up!")
+	// Handle web requests
+	go server.serveUp(server.Registry.Port - 1)
+
 	fmt.Printf("%v", server.Serve())
 }
