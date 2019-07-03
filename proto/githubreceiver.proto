@@ -5,3 +5,12 @@ package githubreceiver;
 message Config {
   int64 time_between_queue_process = 1;
 }
+
+message Ping {
+  string action = 1;
+  Issue issue = 2;
+}
+
+message Issue {
+  string url = 1;
+}
