@@ -123,6 +123,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		s.Log(fmt.Sprintf("Error reading body: %v", err))
+		return
 	}
 
 	s.Log(fmt.Sprintf("%v", string(body)))
@@ -131,9 +132,8 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal([]byte(body), &ping)
 	if err != nil {
 		s.Log(fmt.Sprintf("Error unmarshalling JSON: %v", err))
+		return
 	}
-
-	s.Log(fmt.Sprintf("Derived %v", ping))
 
 	ctx, cancel := utils.BuildContext("githubreceiver", "pingprocess")
 	defer cancel()
