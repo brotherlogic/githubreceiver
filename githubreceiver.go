@@ -89,6 +89,15 @@ func (s *Server) GetState() []*pbg.State {
 func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	s.Log(fmt.Sprintf("Received web ping"))
 	s.webhookcount++
+
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		s.Log(fmt.Sprintf("Error reading body: %v", err))
+	}
+
+	s.Log(fmt.Sprintf("%v", string(body)))
 }
 
 func (s *Server) serveUp(port int32) {
