@@ -14,14 +14,37 @@ import (
 	"google.golang.org/grpc"
 
 	pbbs "github.com/brotherlogic/buildserver/proto"
+	pbgh "github.com/brotherlogic/githubcard/proto"
 	pb "github.com/brotherlogic/githubreceiver/proto"
 	pbgbs "github.com/brotherlogic/gobuildslave/proto"
 	pbg "github.com/brotherlogic/goserver/proto"
 	"github.com/brotherlogic/goserver/utils"
 )
 
+type github interface {
+	add(ctx context.Context, issue *pbgh.Issue) error
+}
+
 type builder interface {
 	build(ctx context.Context, name, fullName string) error
+}
+
+type prodGithub struct {
+	dial func(server string) (*grpc.ClientConn, error)
+}
+
+func (p *prodGithub) add(ctx context.Context, issue *pbgh.Issue) error {
+	conn, err := p.dial("githubcard")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbgh.NewGithubClient(conn)
+	_, err = client.AddIssue(ctx, issue)
+
+	return err
+
 }
 
 type prodBuilder struct {
@@ -53,6 +76,7 @@ type Server struct {
 	config       *pb.Config
 	webhookcount int64
 	builder      builder
+	github       github
 }
 
 // Init builds the server
@@ -62,6 +86,7 @@ func Init() *Server {
 		config:   &pb.Config{TimeBetweenQueueProcess: 60},
 	}
 	s.builder = &prodBuilder{dial: s.DialMaster}
+	s.github = &prodGithub{dial: s.DialMaster}
 	return s
 }
 
