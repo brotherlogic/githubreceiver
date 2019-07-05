@@ -3,14 +3,24 @@ package main
 import (
 	"testing"
 
+	pbgh "github.com/brotherlogic/githubcard/proto"
 	"github.com/brotherlogic/keystore/client"
 	"golang.org/x/net/context"
 
 	pb "github.com/brotherlogic/githubreceiver/proto"
 )
 
+type testGithub struct {
+	issues int
+}
+
 type testBuilder struct {
 	builds int
+}
+
+func (t *testGithub) add(ctx context.Context, issue *pbgh.Issue) error {
+	t.issues++
+	return nil
 }
 
 func (t *testBuilder) build(ctx context.Context, name, fullName string) error {
@@ -48,6 +58,22 @@ func TestBasicBuildPing(t *testing.T) {
 	}
 
 	if tb.builds != 1 {
+		t.Errorf("Did not start a build")
+	}
+}
+
+func TestBasicIssuePing(t *testing.T) {
+	s := InitTestServer()
+	tgh := &testGithub{}
+	s.github = tgh
+
+	err := s.processPing(context.Background(), &pb.Ping{Action: "opened", Issue: &pb.Issue{}})
+
+	if err != nil {
+		t.Errorf("Process has failed: %v", err)
+	}
+
+	if tgh.issues != 1 {
 		t.Errorf("Did not start a build")
 	}
 }
