@@ -22,6 +22,10 @@ func (t *testGithub) add(ctx context.Context, issue *pbgh.Issue) error {
 	t.issues++
 	return nil
 }
+func (t *testGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
+	t.issues--
+	return nil
+}
 
 func (t *testBuilder) build(ctx context.Context, name, fullName string) error {
 	t.builds++
@@ -76,4 +80,15 @@ func TestBasicIssuePing(t *testing.T) {
 	if tgh.issues != 1 {
 		t.Errorf("Did not start a build")
 	}
+
+	err = s.processPing(context.Background(), &pb.Ping{Action: "closed", Issue: &pb.Issue{}})
+
+	if err != nil {
+		t.Errorf("Process has failed: %v", err)
+	}
+
+	if tgh.issues != 0 {
+		t.Errorf("Did not delete an issue")
+	}
+
 }
