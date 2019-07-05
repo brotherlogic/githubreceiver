@@ -22,6 +22,12 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		return nil
 	}
 
+	if ping.Action == "closed" {
+		s.Log(fmt.Sprintf("Deleting issue %v", ping.Issue))
+		s.github.delete(ctx, &pbgh.Issue{Title: ping.Issue.Title, Url: ping.Issue.Url, Origin: pbgh.Issue_FROM_RECEIVER})
+		return nil
+	}
+
 	s.Log(fmt.Sprintf("Skipping processing of %v", ping))
 
 	return nil
