@@ -24,6 +24,7 @@ import (
 type github interface {
 	add(ctx context.Context, issue *pbgh.Issue) error
 	delete(ctx context.Context, issue *pbgh.Issue) error
+	createPullRequest(ctx context.Context, job, branch string) error
 }
 
 type builder interface {
@@ -56,6 +57,20 @@ func (p *prodGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
 
 	client := pbgh.NewGithubClient(conn)
 	_, err = client.DeleteIssue(ctx, &pbgh.DeleteRequest{Issue: issue})
+
+	return err
+
+}
+
+func (p *prodGithub) createPullRequest(ctx context.Context, job, branch string) error {
+	conn, err := p.dial("githubcard")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbgh.NewGithubClient(conn)
+	_, err = client.CreatePullRequest(ctx, &pbgh.PullRequest{Job: job, Branch: branch})
 
 	return err
 

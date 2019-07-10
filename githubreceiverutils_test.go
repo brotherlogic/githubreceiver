@@ -11,7 +11,8 @@ import (
 )
 
 type testGithub struct {
-	issues int
+	issues       int
+	pullRequests int
 }
 
 type testBuilder struct {
@@ -24,6 +25,11 @@ func (t *testGithub) add(ctx context.Context, issue *pbgh.Issue) error {
 }
 func (t *testGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
 	t.issues--
+	return nil
+}
+
+func (t *testGithub) createPullRequest(ctx context.Context, job, branch string) error {
+	t.pullRequests++
 	return nil
 }
 
@@ -89,6 +95,23 @@ func TestBasicIssuePing(t *testing.T) {
 
 	if tgh.issues != 0 {
 		t.Errorf("Did not delete an issue")
+	}
+
+}
+
+func TestPullRequestPing(t *testing.T) {
+	s := InitTestServer()
+	tgh := &testGithub{}
+	s.github = tgh
+
+	err := s.processPing(context.Background(), &pb.Ping{RefType: "branch", Repository: &pb.Repository{}})
+
+	if err != nil {
+		t.Errorf("Process has failed: %v", err)
+	}
+
+	if tgh.pullRequests != 1 {
+		t.Errorf("Did not start a build")
 	}
 
 }

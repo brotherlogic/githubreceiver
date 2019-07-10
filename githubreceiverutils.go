@@ -28,6 +28,12 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		return nil
 	}
 
+	if ping.RefType == "branch" {
+		s.Log(fmt.Sprintf("Building pull request for %v", ping.Ref))
+		s.github.createPullRequest(ctx, ping.Ref, ping.Repository.Name)
+		return nil
+	}
+
 	s.Log(fmt.Sprintf("Skipping processing of %v", ping))
 
 	return nil
