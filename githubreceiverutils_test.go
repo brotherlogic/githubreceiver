@@ -11,7 +11,8 @@ import (
 )
 
 type testGithub struct {
-	issues int
+	issues       int
+	pullRequests int
 }
 
 type testBuilder struct {
@@ -24,6 +25,11 @@ func (t *testGithub) add(ctx context.Context, issue *pbgh.Issue) error {
 }
 func (t *testGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
 	t.issues--
+	return nil
+}
+
+func (t *testGithub) createPullRequest(ctx context.Context, job, branch string) error {
+	t.pullRequests++
 	return nil
 }
 
