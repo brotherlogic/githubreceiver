@@ -98,3 +98,20 @@ func TestBasicIssuePing(t *testing.T) {
 	}
 
 }
+
+func TestPullRequestPing(t *testing.T) {
+	s := InitTestServer()
+	tgh := &testGithub{}
+	s.github = tgh
+
+	err := s.processPing(context.Background(), &pb.Ping{RefType: "branch", Repository: &pb.Repository{}})
+
+	if err != nil {
+		t.Errorf("Process has failed: %v", err)
+	}
+
+	if tgh.pullRequests != 1 {
+		t.Errorf("Did not start a build")
+	}
+
+}
