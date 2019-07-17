@@ -204,6 +204,7 @@ func (s *Server) serveUp(port int32) {
 
 func main() {
 	var quiet = flag.Bool("quiet", false, "Show all output")
+	var init = flag.Bool("init", false, "Init the system")
 	flag.Parse()
 
 	//Turn off logging
@@ -216,6 +217,14 @@ func main() {
 	server.PrepServer()
 	server.Register = server
 	server.RegisterServer("githubreceiver", false)
+
+	if *init {
+		ctx, cancel := utils.BuildContext("githubreceiver", "githubreceiver")
+		defer cancel()
+		server.config.Processed++
+		server.save(ctx)
+		return
+	}
 
 	// Handle web requests
 	go server.serveUp(server.Registry.Port - 1)
