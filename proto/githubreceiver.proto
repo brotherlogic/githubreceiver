@@ -4,6 +4,7 @@ package githubreceiver;
 
 message Config {
   int64 time_between_queue_process = 1;
+  int64 processed = 2;
 }
 
 message Ping {
