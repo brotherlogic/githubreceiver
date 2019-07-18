@@ -28,7 +28,7 @@ func (t *testGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
 	return nil
 }
 
-func (t *testGithub) createPullRequest(ctx context.Context, job, branch string) error {
+func (t *testGithub) createPullRequest(ctx context.Context, job, branch, title string) error {
 	t.pullRequests++
 	return nil
 }
