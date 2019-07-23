@@ -14,7 +14,7 @@ type testPullRequester struct {
 	updates int
 }
 
-func (p *testPullRequester) updatePullRequest(ctx context.Context, url, name string, pass bool) error {
+func (p *testPullRequester) updatePullRequest(ctx context.Context, url, name, checkName string, pass bool) error {
 	p.updates++
 	return nil
 }
@@ -130,7 +130,7 @@ func TestPullRequestComplete(t *testing.T) {
 	tph := &testPullRequester{}
 	s.pullRequester = tph
 
-	err := s.processPing(context.Background(), &pb.Ping{Action: "completed", CheckSuite: &pb.CheckSuite{PullRequests: []*pb.PullRequest{&pb.PullRequest{Url: "blah"}}}, Name: "yep", CheckRun: &pb.CheckRun{Conclusion: "sheesh"}})
+	err := s.processPing(context.Background(), &pb.Ping{Context: "blah", Sha: "blah"})
 
 	if err != nil {
 		t.Fatalf("Error %v", err)
