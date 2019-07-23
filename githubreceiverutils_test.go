@@ -10,6 +10,15 @@ import (
 	pb "github.com/brotherlogic/githubreceiver/proto"
 )
 
+type testPullRequester struct {
+	updates int
+}
+
+func (p *testPullRequester) updatePullRequest(ctx context.Context, url, name string, pass bool) error {
+	p.updates++
+	return nil
+}
+
 type testGithub struct {
 	issues       int
 	pullRequests int
@@ -114,4 +123,20 @@ func TestPullRequestPing(t *testing.T) {
 		t.Errorf("Did not start a build")
 	}
 
+}
+
+func TestPullRequestComplete(t *testing.T) {
+	s := InitTestServer()
+	tph := &testPullRequester{}
+	s.pullRequester = tph
+
+	err := s.processPing(context.Background(), &pb.Ping{Action: "completed", CheckSuite: &pb.CheckSuite{PullRequests: []*pb.PullRequest{&pb.PullRequest{Url: "blah"}}}, Name: "yep", CheckRun: &pb.CheckRun{Conclusion: "sheesh"}})
+
+	if err != nil {
+		t.Fatalf("Error %v", err)
+	}
+
+	if tph.updates != 1 {
+		t.Errorf("Did not update pr")
+	}
 }

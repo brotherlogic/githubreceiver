@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/brotherlogic/goserver"
+	"github.com/brotherlogic/goserver/utils"
 	"github.com/brotherlogic/keystore/client"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -18,8 +19,32 @@ import (
 	pb "github.com/brotherlogic/githubreceiver/proto"
 	pbgbs "github.com/brotherlogic/gobuildslave/proto"
 	pbg "github.com/brotherlogic/goserver/proto"
-	"github.com/brotherlogic/goserver/utils"
+	pbpr "github.com/brotherlogic/pullrequester/proto"
 )
+
+type pullRequester interface {
+	updatePullRequest(ctx context.Context, url, name string, pass bool) error
+}
+
+type prodPullRequester struct {
+	dial func(server string) (*grpc.ClientConn, error)
+}
+
+func (p *prodPullRequester) updatePullRequest(ctx context.Context, url, name string, pass bool) error {
+	conn, err := p.dial("pullrequester")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbpr.NewPullRequesterServiceClient(conn)
+	passV := pbpr.PullRequest_Check_FAIL
+	if pass {
+		passV = pbpr.PullRequest_Check_PASS
+	}
+	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Checks: []*pbpr.PullRequest_Check{&pbpr.PullRequest_Check{Source: name, Pass: passV}}}})
+	return err
+}
 
 type github interface {
 	add(ctx context.Context, issue *pbgh.Issue) error
@@ -102,10 +127,11 @@ const (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	config       *pb.Config
-	webhookcount int64
-	builder      builder
-	github       github
+	config        *pb.Config
+	webhookcount  int64
+	builder       builder
+	github        github
+	pullRequester pullRequester
 }
 
 // Init builds the server
@@ -116,6 +142,7 @@ func Init() *Server {
 	}
 	s.builder = &prodBuilder{dial: s.DialMaster}
 	s.github = &prodGithub{dial: s.DialMaster}
+	s.pullRequester = &prodPullRequester{dial: s.DialMaster}
 	return s
 }
 

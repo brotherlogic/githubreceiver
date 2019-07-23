@@ -13,6 +13,21 @@ message Ping {
   string ref = 3;
   Repository repository = 4;
   string ref_type = 5;
+  string name = 6;
+  CheckRun check_run = 8;
+  CheckSuite check_suite = 7;
+}
+
+message CheckSuite {
+  repeated PullRequest pull_requests = 1;
+}
+
+message PullRequest {
+  string url = 1;
+}
+
+message CheckRun {
+  string conclusion = 1;
 }
 
 message Repository {
