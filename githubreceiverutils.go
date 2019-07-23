@@ -28,7 +28,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		return nil
 	}
 
-	if ping.RefType == "synchronize" {
+	if ping.Action == "synchronize" {
 		return s.pullRequester.commitToPullRequest(ctx, ping.Url, ping.Head.Sha)
 	}
 

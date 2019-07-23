@@ -146,3 +146,19 @@ func TestPullRequestComplete(t *testing.T) {
 		t.Errorf("Did not update pr")
 	}
 }
+
+func TestPullRequestAdd(t *testing.T) {
+	s := InitTestServer()
+	tph := &testPullRequester{}
+	s.pullRequester = tph
+
+	err := s.processPing(context.Background(), &pb.Ping{Action: "synchronize", Head: &pb.Head{Sha: "blah"}})
+
+	if err != nil {
+		t.Fatalf("Error %v", err)
+	}
+
+	if tph.commits != 1 {
+		t.Errorf("Did not update pr")
+	}
+}
