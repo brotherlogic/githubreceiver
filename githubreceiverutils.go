@@ -34,6 +34,10 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		return nil
 	}
 
+	if ping.Action == "completed" {
+		return s.pullRequester.updatePullRequest(ctx, ping.CheckSuite.PullRequests[0].Url, ping.Name, ping.CheckRun.Conclusion == "success")
+	}
+
 	s.Log(fmt.Sprintf("Skipping processing of %v", ping))
 
 	return nil
