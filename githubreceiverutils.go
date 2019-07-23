@@ -28,6 +28,10 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		return nil
 	}
 
+	if ping.Action == "synchronize" {
+		return s.pullRequester.commitToPullRequest(ctx, ping.Url, ping.Head.Sha)
+	}
+
 	if ping.RefType == "branch" {
 		s.Log(fmt.Sprintf("Building pull request for %v", ping.Ref))
 		s.github.createPullRequest(ctx, ping.Repository.Name, ping.Ref, ping.Ref)

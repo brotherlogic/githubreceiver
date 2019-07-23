@@ -24,6 +24,7 @@ import (
 
 type pullRequester interface {
 	updatePullRequest(ctx context.Context, url, name, checkName string, pass bool) error
+	commitToPullRequest(ctx context.Context, url, sha string) error
 }
 
 type prodPullRequester struct {
@@ -43,6 +44,18 @@ func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, ch
 		passV = pbpr.PullRequest_Check_PASS
 	}
 	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Name: name, Shas: []string{sha}, Checks: []*pbpr.PullRequest_Check{&pbpr.PullRequest_Check{Source: checkName, Pass: passV}}}})
+	return err
+}
+
+func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha string) error {
+	conn, err := p.dial("pullrequester")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbpr.NewPullRequesterServiceClient(conn)
+	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Shas: []string{sha}}})
 	return err
 }
 
