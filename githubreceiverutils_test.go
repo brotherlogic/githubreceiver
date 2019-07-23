@@ -12,6 +12,12 @@ import (
 
 type testPullRequester struct {
 	updates int
+	commits int
+}
+
+func (p *testPullRequester) commitToPullRequest(ctx context.Context, url, sha string) error {
+	p.commits++
+	return nil
 }
 
 func (p *testPullRequester) updatePullRequest(ctx context.Context, url, name, checkName string, pass bool) error {
