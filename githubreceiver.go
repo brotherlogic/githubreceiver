@@ -23,14 +23,14 @@ import (
 )
 
 type pullRequester interface {
-	updatePullRequest(ctx context.Context, url, name string, pass bool) error
+	updatePullRequest(ctx context.Context, url, name, checkName string, pass bool) error
 }
 
 type prodPullRequester struct {
 	dial func(server string) (*grpc.ClientConn, error)
 }
 
-func (p *prodPullRequester) updatePullRequest(ctx context.Context, url, name string, pass bool) error {
+func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, checkName string, pass bool) error {
 	conn, err := p.dial("pullrequester")
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func (p *prodPullRequester) updatePullRequest(ctx context.Context, url, name str
 	if pass {
 		passV = pbpr.PullRequest_Check_PASS
 	}
-	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Checks: []*pbpr.PullRequest_Check{&pbpr.PullRequest_Check{Source: name, Pass: passV}}}})
+	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Name: name, Shas: []string{sha}, Checks: []*pbpr.PullRequest_Check{&pbpr.PullRequest_Check{Source: checkName, Pass: passV}}}})
 	return err
 }
 
