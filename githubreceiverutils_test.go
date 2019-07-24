@@ -87,6 +87,19 @@ func TestBasicBuildPing(t *testing.T) {
 	}
 }
 
+func TestAddPullRequest(t *testing.T) {
+	s := InitTestServer()
+	tgh := &testGithub{}
+	s.github = tgh
+	s.pullRequester = &testPullRequester{}
+
+	err := s.processPing(context.Background(), &pb.Ping{Action: "opened", Number: 20, Issue: &pb.Issue{}, Head: &pb.Head{Sha: "blah"}, PullRequest: &pb.PullRequest{Url: "blahurl"}})
+
+	if err != nil {
+		t.Errorf("Process has failed: %v", err)
+	}
+}
+
 func TestBasicIssuePing(t *testing.T) {
 	s := InitTestServer()
 	tgh := &testGithub{}
