@@ -19,10 +19,15 @@ message Ping {
   string context = 9;
   Head head = 10;
   string url = 11;
+  PullRequest pull_request = 12;
 }
 
 message Head {
   string sha = 1;
+}
+
+message PullRequest {
+  string url = 1;
 }
 
 
