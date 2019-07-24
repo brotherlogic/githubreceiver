@@ -29,7 +29,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	}
 
 	if ping.Action == "synchronize" {
-		return s.pullRequester.commitToPullRequest(ctx, ping.Url, ping.Head.Sha)
+		return s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.Head.Sha)
 	}
 
 	if ping.RefType == "branch" {
