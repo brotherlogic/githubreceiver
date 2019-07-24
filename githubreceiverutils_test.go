@@ -166,7 +166,7 @@ func TestPullRequestAdd(t *testing.T) {
 	tph := &testPullRequester{}
 	s.pullRequester = tph
 
-	err := s.processPing(context.Background(), &pb.Ping{Action: "synchronize", PullRequest: &pb.PullRequest{Url: "blah"}, Head: &pb.Head{Sha: "blah"}})
+	err := s.processPing(context.Background(), &pb.Ping{Action: "synchronize", PullRequest: &pb.PullRequest{Url: "blah", Head: &pb.Head{Sha: "blah"}}})
 
 	if err != nil {
 		t.Fatalf("Error %v", err)
