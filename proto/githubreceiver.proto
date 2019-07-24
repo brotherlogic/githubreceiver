@@ -20,6 +20,7 @@ message Ping {
   Head head = 10;
   string url = 11;
   PullRequest pull_request = 12;
+  int32 number = 13;
 }
 
 message Head {

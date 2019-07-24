@@ -91,8 +91,9 @@ func TestBasicIssuePing(t *testing.T) {
 	s := InitTestServer()
 	tgh := &testGithub{}
 	s.github = tgh
+	s.pullRequester = &testPullRequester{}
 
-	err := s.processPing(context.Background(), &pb.Ping{Action: "opened", Issue: &pb.Issue{}})
+	err := s.processPing(context.Background(), &pb.Ping{Action: "opened", Issue: &pb.Issue{}, Head: &pb.Head{Sha: "blah"}})
 
 	if err != nil {
 		t.Errorf("Process has failed: %v", err)
