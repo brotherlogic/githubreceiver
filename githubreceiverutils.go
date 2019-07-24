@@ -19,6 +19,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	if ping.Action == "opened" {
 		s.Log(fmt.Sprintf("Adding issue %v", ping.Issue))
 		s.github.add(ctx, &pbgh.Issue{Title: ping.Issue.Title, Url: ping.Issue.Url, Origin: pbgh.Issue_FROM_RECEIVER})
+		s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.Head.Sha)
 		return nil
 	}
 
