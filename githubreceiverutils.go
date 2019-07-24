@@ -23,6 +23,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	}
 
 	if ping.Action == "opened" && ping.Number > 0 {
+		s.Log(fmt.Sprintf("Opening PR %v", ping))
 		s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.Head.Sha)
 		return nil
 	}
@@ -34,6 +35,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	}
 
 	if ping.Action == "synchronize" {
+		s.Log(fmt.Sprintf("Commiting to  PR %v", ping))
 		return s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.Head.Sha)
 	}
 
@@ -44,6 +46,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	}
 
 	if len(ping.Context) > 0 {
+		s.Log(fmt.Sprintf("Updating PR %v", ping))
 		return s.pullRequester.updatePullRequest(ctx, ping.Sha, ping.Name, ping.Context, ping.State == "success")
 	}
 
