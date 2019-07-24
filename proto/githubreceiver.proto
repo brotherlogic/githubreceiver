@@ -29,6 +29,7 @@ message Head {
 
 message PullRequest {
   string url = 1;
+  Head head = 2;
 }
 
 
