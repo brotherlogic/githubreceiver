@@ -4,6 +4,7 @@ package githubreceiver;
 
 message Config {
   int64 time_between_queue_process = 1;
+  int64 processed = 2;
 }
 
 message Ping {
@@ -12,7 +13,25 @@ message Ping {
   string ref = 3;
   Repository repository = 4;
   string ref_type = 5;
+  string sha = 6;
+  string state = 7;
+  string name = 8;
+  string context = 9;
+  Head head = 10;
+  string url = 11;
+  PullRequest pull_request = 12;
+  int32 number = 13;
 }
+
+message Head {
+  string sha = 1;
+}
+
+message PullRequest {
+  string url = 1;
+  Head head = 2;
+}
+
 
 message Repository {
   string name = 1;

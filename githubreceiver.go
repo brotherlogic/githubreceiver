@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/brotherlogic/goserver"
+	"github.com/brotherlogic/goserver/utils"
 	"github.com/brotherlogic/keystore/client"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -18,13 +19,50 @@ import (
 	pb "github.com/brotherlogic/githubreceiver/proto"
 	pbgbs "github.com/brotherlogic/gobuildslave/proto"
 	pbg "github.com/brotherlogic/goserver/proto"
-	"github.com/brotherlogic/goserver/utils"
+	pbpr "github.com/brotherlogic/pullrequester/proto"
 )
+
+type pullRequester interface {
+	updatePullRequest(ctx context.Context, url, name, checkName string, pass bool) error
+	commitToPullRequest(ctx context.Context, url, sha string) error
+}
+
+type prodPullRequester struct {
+	dial func(server string) (*grpc.ClientConn, error)
+}
+
+func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, checkName string, pass bool) error {
+	conn, err := p.dial("pullrequester")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbpr.NewPullRequesterServiceClient(conn)
+	passV := pbpr.PullRequest_Check_FAIL
+	if pass {
+		passV = pbpr.PullRequest_Check_PASS
+	}
+	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Name: name, Shas: []string{sha}, Checks: []*pbpr.PullRequest_Check{&pbpr.PullRequest_Check{Source: checkName, Pass: passV}}}})
+	return err
+}
+
+func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha string) error {
+	conn, err := p.dial("pullrequester")
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	client := pbpr.NewPullRequesterServiceClient(conn)
+	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Shas: []string{sha}}})
+	return err
+}
 
 type github interface {
 	add(ctx context.Context, issue *pbgh.Issue) error
 	delete(ctx context.Context, issue *pbgh.Issue) error
-	createPullRequest(ctx context.Context, job, branch string) error
+	createPullRequest(ctx context.Context, job, branch, title string) error
 }
 
 type builder interface {
@@ -62,7 +100,7 @@ func (p *prodGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
 
 }
 
-func (p *prodGithub) createPullRequest(ctx context.Context, job, branch string) error {
+func (p *prodGithub) createPullRequest(ctx context.Context, job, branch, title string) error {
 	conn, err := p.dial("githubcard")
 	if err != nil {
 		return err
@@ -70,7 +108,7 @@ func (p *prodGithub) createPullRequest(ctx context.Context, job, branch string) 
 	defer conn.Close()
 
 	client := pbgh.NewGithubClient(conn)
-	_, err = client.CreatePullRequest(ctx, &pbgh.PullRequest{Job: job, Branch: branch})
+	_, err = client.CreatePullRequest(ctx, &pbgh.PullRequest{Job: job, Branch: branch, Title: title})
 
 	return err
 
@@ -102,10 +140,11 @@ const (
 //Server main server type
 type Server struct {
 	*goserver.GoServer
-	config       *pb.Config
-	webhookcount int64
-	builder      builder
-	github       github
+	config        *pb.Config
+	webhookcount  int64
+	builder       builder
+	github        github
+	pullRequester pullRequester
 }
 
 // Init builds the server
@@ -116,6 +155,7 @@ func Init() *Server {
 	}
 	s.builder = &prodBuilder{dial: s.DialMaster}
 	s.github = &prodGithub{dial: s.DialMaster}
+	s.pullRequester = &prodPullRequester{dial: s.DialMaster}
 	return s
 }
 
@@ -204,6 +244,7 @@ func (s *Server) serveUp(port int32) {
 
 func main() {
 	var quiet = flag.Bool("quiet", false, "Show all output")
+	var init = flag.Bool("init", false, "Init the system")
 	flag.Parse()
 
 	//Turn off logging
@@ -212,10 +253,18 @@ func main() {
 		log.SetOutput(ioutil.Discard)
 	}
 	server := Init()
-	server.GoServer.KSclient = *keystoreclient.GetClient(server.GetIP)
+	server.GoServer.KSclient = *keystoreclient.GetClient(server.DialMaster)
 	server.PrepServer()
 	server.Register = server
 	server.RegisterServer("githubreceiver", false)
+
+	if *init {
+		ctx, cancel := utils.BuildContext("githubreceiver", "githubreceiver")
+		defer cancel()
+		server.config.Processed++
+		server.save(ctx)
+		return
+	}
 
 	// Handle web requests
 	go server.serveUp(server.Registry.Port - 1)
