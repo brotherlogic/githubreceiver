@@ -24,7 +24,7 @@ import (
 
 type pullRequester interface {
 	updatePullRequest(ctx context.Context, url, name, checkName string, pass bool) error
-	commitToPullRequest(ctx context.Context, url, sha string) error
+	commitToPullRequest(ctx context.Context, url, sha, name string) error
 }
 
 type prodPullRequester struct {
@@ -47,7 +47,7 @@ func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, ch
 	return err
 }
 
-func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha string) error {
+func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha, name string) error {
 	conn, err := p.dial("pullrequester")
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha st
 	defer conn.Close()
 
 	client := pbpr.NewPullRequesterServiceClient(conn)
-	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Shas: []string{sha}}})
+	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Shas: []string{sha}, Name: name}})
 	return err
 }
 
