@@ -15,7 +15,7 @@ type testPullRequester struct {
 	commits int
 }
 
-func (p *testPullRequester) commitToPullRequest(ctx context.Context, url, sha string) error {
+func (p *testPullRequester) commitToPullRequest(ctx context.Context, url, sha, name string) error {
 	p.commits++
 	return nil
 }

@@ -25,6 +25,7 @@ message Ping {
 
 message Head {
   string sha = 1;
+  string ref = 2;
 }
 
 message PullRequest {
