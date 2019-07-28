@@ -21,6 +21,11 @@ message Ping {
   string url = 11;
   PullRequest pull_request = 12;
   int32 number = 13;
+  repeated Branch branches = 14;
+}
+
+message Branch {
+  string name = 1;
 }
 
 message Head {
@@ -31,6 +36,7 @@ message Head {
 message PullRequest {
   string url = 1;
   Head head = 2;
+  string title = 3;
 }
 
 

@@ -24,7 +24,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 
 	if ping.Action == "opened" && ping.Number > 0 {
 		s.Log(fmt.Sprintf("Opening PR %v", ping))
-		s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Head.Ref)
+		s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Title)
 		return nil
 	}
 
@@ -36,7 +36,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 
 	if ping.Action == "synchronize" {
 		s.Log(fmt.Sprintf("Commiting to  PR %v", ping))
-		return s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Head.Ref)
+		return s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Title)
 	}
 
 	if ping.RefType == "branch" {
