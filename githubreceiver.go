@@ -220,8 +220,6 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.Log(fmt.Sprintf("%v", string(body)))
-
 	var ping *pb.Ping
 	err = json.Unmarshal([]byte(body), &ping)
 	if err != nil {
