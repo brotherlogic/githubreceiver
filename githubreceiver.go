@@ -254,7 +254,7 @@ func main() {
 	server.GoServer.KSclient = *keystoreclient.GetClient(server.DialMaster)
 	server.PrepServer()
 	server.Register = server
-	server.RegisterServerV2("githubreceiver", false)
+	server.RegisterServerV2("githubreceiver", false, false)
 
 	if *init {
 		ctx, cancel := utils.BuildContext("githubreceiver", "githubreceiver")
