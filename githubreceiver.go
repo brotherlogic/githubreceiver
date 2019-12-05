@@ -153,9 +153,9 @@ func Init() *Server {
 		GoServer: &goserver.GoServer{},
 		config:   &pb.Config{TimeBetweenQueueProcess: 60},
 	}
-	s.builder = &prodBuilder{dial: s.DialMaster}
-	s.github = &prodGithub{dial: s.DialMaster}
-	s.pullRequester = &prodPullRequester{dial: s.DialMaster}
+	s.builder = &prodBuilder{dial: s.NewBaseDial}
+	s.github = &prodGithub{dial: s.NewBaseDial}
+	s.pullRequester = &prodPullRequester{dial: s.NewBaseDial}
 	return s
 }
 
