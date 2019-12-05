@@ -142,6 +142,7 @@ type Server struct {
 	*goserver.GoServer
 	config        *pb.Config
 	webhookcount  int64
+	webhookfail   int64
 	builder       builder
 	github        github
 	pullRequester pullRequester
@@ -205,6 +206,7 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
 		&pbg.State{Key: "web_hooks", Value: s.webhookcount},
+		&pbg.State{Key: "web_hook_fails", Value: s.webhookfail},
 	}
 }
 
@@ -229,7 +231,10 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 
 	ctx, cancel := utils.BuildContext("githubreceiver", "pingprocess")
 	defer cancel()
-	s.processPing(ctx, ping)
+	err = s.processPing(ctx, ping)
+	if err != nil {
+		s.webhookfail++
+	}
 }
 
 func (s *Server) serveUp(port int32) {
