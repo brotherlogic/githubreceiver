@@ -211,7 +211,6 @@ func (s *Server) GetState() []*pbg.State {
 }
 
 func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
-	s.Log(fmt.Sprintf("Received web ping"))
 	s.webhookcount++
 
 	defer r.Body.Close()
@@ -233,6 +232,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	err = s.processPing(ctx, ping)
 	if err != nil {
+		s.Log(fmt.Sprintf("Error processing ping: %v", err))
 		s.webhookfail++
 	}
 }
