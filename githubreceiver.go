@@ -228,6 +228,10 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if len(ping.Context) > 0 {
+		s.Log(fmt.Sprintf("Ping: %v", string(body)))
+	}
+
 	ctx, cancel := utils.BuildContext("githubreceiver", "pingprocess")
 	defer cancel()
 	err = s.processPing(ctx, ping)
