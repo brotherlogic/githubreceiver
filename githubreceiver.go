@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/brotherlogic/goserver"
 	"github.com/brotherlogic/goserver/utils"
@@ -249,6 +250,10 @@ func (s *Server) serveUp(port int32) {
 	}
 }
 
+func (s *Server) become(ctx context.Context) error {
+	return nil
+}
+
 func main() {
 	var quiet = flag.Bool("quiet", false, "Show all output")
 	var init = flag.Bool("init", false, "Init the system")
@@ -278,6 +283,9 @@ func main() {
 
 	// Handle web requests
 	go server.serveUp(server.Registry.Port - 1)
+
+	//This allows us to become master
+	server.RegisterRepeatingTask(server.become, "become", time.Minute)
 
 	fmt.Printf("%v", server.Serve())
 }
