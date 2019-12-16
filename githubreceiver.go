@@ -29,7 +29,8 @@ type pullRequester interface {
 }
 
 type prodPullRequester struct {
-	dial func(server string) (*grpc.ClientConn, error)
+	dial       func(server string) (*grpc.ClientConn, error)
+	RaiseIssue func(ctx context.Context, title, body string, keep bool)
 }
 
 func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, checkName string, pass bool) error {
@@ -57,6 +58,9 @@ func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha, n
 
 	client := pbpr.NewPullRequesterServiceClient(conn)
 	_, err = client.UpdatePullRequest(ctx, &pbpr.UpdateRequest{Update: &pbpr.PullRequest{Url: url, Shas: []string{sha}, Name: name}})
+	if err != nil {
+		p.RaiseIssue(ctx, "PR problem", fmt.Sprintf("Error creating a pull request: %v", err), false)
+	}
 	return err
 }
 
@@ -157,7 +161,7 @@ func Init() *Server {
 	}
 	s.builder = &prodBuilder{dial: s.NewBaseDial}
 	s.github = &prodGithub{dial: s.NewBaseDial}
-	s.pullRequester = &prodPullRequester{dial: s.NewBaseDial}
+	s.pullRequester = &prodPullRequester{dial: s.NewBaseDial, RaiseIssue: s.RaiseIssue}
 	return s
 }
 
