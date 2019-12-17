@@ -172,7 +172,7 @@ func TestPullRequestAdd(t *testing.T) {
 		t.Fatalf("Error %v", err)
 	}
 
-	if tph.commits != 1 {
+	if tph.commits != 0 {
 		t.Errorf("Did not update pr")
 	}
 }
