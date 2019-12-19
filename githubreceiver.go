@@ -62,6 +62,7 @@ func (s *Server) runQueue(ctx context.Context) error {
 			s.pqueue = s.pqueue[1:]
 			return nil
 		}
+		s.pullFails++
 	}
 	return nil
 }
@@ -169,6 +170,7 @@ type Server struct {
 	github        github
 	pullRequester pullRequester
 	pqueue        []pull
+	pullFails     int64
 }
 
 // Init builds the server
@@ -230,6 +232,7 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
 		&pbg.State{Key: "pulls", Value: int64(len(s.pqueue))},
+		&pbg.State{Key: "pull_fails", Value: s.pullFails},
 		&pbg.State{Key: "web_hooks", Value: s.webhookcount},
 		&pbg.State{Key: "web_hook_fails", Value: s.webhookfail},
 	}
