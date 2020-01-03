@@ -57,7 +57,7 @@ type pull struct {
 
 func (s *Server) runQueue(ctx context.Context) error {
 	if len(s.pqueue) > 0 {
-		err := s.pullRequester.commitToPullRequest(ctx, s.pqueue[0].sha, s.pqueue[0].url, s.pqueue[0].name)
+		err := s.pullRequester.commitToPullRequest(ctx, s.pqueue[0].url, s.pqueue[0].sha, s.pqueue[0].name)
 		if err == nil {
 			s.backends[s.pqueue[0].sha] = 1
 			s.pqueue = s.pqueue[1:]
@@ -235,8 +235,8 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 func (s *Server) GetState() []*pbg.State {
 	return []*pbg.State{
 		&pbg.State{Key: "backends", Text: fmt.Sprintf("%v", s.backends)},
-		&pbg.State{Key: "pulls", Value: int64(len(s.pqueue))},
 		&pbg.State{Key: "pull_fails", Value: s.pullFails},
+		&pbg.State{Key: "pulls", Value: int64(len(s.pqueue))},
 		&pbg.State{Key: "web_hooks", Value: s.webhookcount},
 		&pbg.State{Key: "web_hook_fails", Value: s.webhookfail},
 	}
