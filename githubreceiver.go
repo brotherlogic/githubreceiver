@@ -57,7 +57,7 @@ type pull struct {
 
 func (s *Server) runQueue(ctx context.Context) error {
 	if len(s.pqueue) > 0 {
-		err := s.pullRequester.commitToPullRequest(ctx, s.pqueue[0].sha, s.pqueue[0].url, s.pqueue[0].name)
+		err := s.pullRequester.commitToPullRequest(ctx, s.pqueue[0].url, s.pqueue[0].sha, s.pqueue[0].name)
 		if err == nil {
 			s.backends[s.pqueue[0].sha] = 1
 			s.pqueue = s.pqueue[1:]
