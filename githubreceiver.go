@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/brotherlogic/goserver"
 	"github.com/brotherlogic/goserver/utils"
@@ -297,7 +296,7 @@ func main() {
 	server := Init()
 	server.PrepServer()
 	server.Register = server
-	err := server.RegisterServerV2("githubreceiver", false, false)
+	err := server.RegisterServerV2("githubreceiver", false, true)
 	if err != nil {
 		return
 	}
@@ -312,10 +311,6 @@ func main() {
 
 	// Handle web requests
 	go server.serveUp(server.Registry.Port - 1)
-
-	//This allows us to become master
-	server.RegisterRepeatingTask(server.become, "become", time.Minute)
-	server.RegisterRepeatingTaskNonMaster(server.runQueue, "run_queue", time.Minute)
 
 	fmt.Printf("%v", server.Serve())
 }
