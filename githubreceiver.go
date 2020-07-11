@@ -27,12 +27,12 @@ type pullRequester interface {
 }
 
 type prodPullRequester struct {
-	dial       func(server string) (*grpc.ClientConn, error)
+	dial       func(ctx context.Context, server string) (*grpc.ClientConn, error)
 	RaiseIssue func(title, body string)
 }
 
 func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, checkName string, pass bool) error {
-	conn, err := p.dial("pullrequester")
+	conn, err := p.dial(ctx, "pullrequester")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (s *Server) runQueue(ctx context.Context) error {
 }
 
 func (p *prodPullRequester) commitToPullRequest(ctx context.Context, url, sha, name string) error {
-	conn, err := p.dial("pullrequester")
+	conn, err := p.dial(ctx, "pullrequester")
 	if err != nil {
 		return err
 	}
@@ -92,11 +92,11 @@ type builder interface {
 }
 
 type prodGithub struct {
-	dial func(server string) (*grpc.ClientConn, error)
+	dial func(ctx context.Context, server string) (*grpc.ClientConn, error)
 }
 
 func (p *prodGithub) add(ctx context.Context, issue *pbgh.Issue) error {
-	conn, err := p.dial("githubcard")
+	conn, err := p.dial(ctx, "githubcard")
 	if err != nil {
 		return err
 	}
@@ -109,7 +109,7 @@ func (p *prodGithub) add(ctx context.Context, issue *pbgh.Issue) error {
 
 }
 func (p *prodGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
-	conn, err := p.dial("githubcard")
+	conn, err := p.dial(ctx, "githubcard")
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func (p *prodGithub) delete(ctx context.Context, issue *pbgh.Issue) error {
 }
 
 func (p *prodGithub) createPullRequest(ctx context.Context, job, branch, title string) error {
-	conn, err := p.dial("githubcard")
+	conn, err := p.dial(ctx, "githubcard")
 	if err != nil {
 		return err
 	}
@@ -137,11 +137,11 @@ func (p *prodGithub) createPullRequest(ctx context.Context, job, branch, title s
 }
 
 type prodBuilder struct {
-	dial func(server string) (*grpc.ClientConn, error)
+	dial func(ctx context.Context, server string) (*grpc.ClientConn, error)
 }
 
 func (p *prodBuilder) build(ctx context.Context, name, fullName string) error {
-	conn, err := p.dial("buildserver")
+	conn, err := p.dial(ctx, "buildserver")
 	if err != nil {
 		return err
 	}
@@ -180,9 +180,9 @@ func Init() *Server {
 		config:   &pb.Config{TimeBetweenQueueProcess: 60},
 		backends: make(map[string]int),
 	}
-	s.builder = &prodBuilder{dial: s.NewBaseDial}
-	s.github = &prodGithub{dial: s.NewBaseDial}
-	s.pullRequester = &prodPullRequester{dial: s.NewBaseDial, RaiseIssue: s.RaiseIssue}
+	s.builder = &prodBuilder{dial: s.FDialServer}
+	s.github = &prodGithub{dial: s.FDialServer}
+	s.pullRequester = &prodPullRequester{dial: s.FDialServer, RaiseIssue: s.RaiseIssue}
 	s.pqueue = make([]pull, 0)
 	return s
 }
