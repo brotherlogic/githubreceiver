@@ -25,6 +25,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	if ping.Action == "opened" && ping.Number > 0 {
 		s.Log(fmt.Sprintf("Opening PR %v", ping))
 		s.pqueue = append(s.pqueue, pull{ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Title})
+		s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Title)
 
 		return nil
 	}
@@ -40,6 +41,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	if ping.Action == "synchronize" {
 		s.Log(fmt.Sprintf("Commiting to  PR %v", ping))
 		s.pqueue = append(s.pqueue, pull{ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Title})
+		s.pullRequester.commitToPullRequest(ctx, ping.PullRequest.Url, ping.PullRequest.Head.Sha, ping.PullRequest.Title)
 		return nil
 	}
 
