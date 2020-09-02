@@ -7,9 +7,12 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/brotherlogic/goserver"
 	"github.com/brotherlogic/goserver/utils"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
@@ -240,6 +243,13 @@ func (s *Server) GetState() []*pbg.State {
 	}
 }
 
+var (
+	hook = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "githubreceiver_hook",
+		Help: "Push Size",
+	}, []string{"type", "error"})
+)
+
 func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	s.webhookcount++
 
@@ -247,6 +257,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
+		hook.With(prometheus.Labels{"type": "unknown", "error": "bodyread"}).Inc()
 		s.Log(fmt.Sprintf("Error reading body: %v", err))
 		return
 	}
@@ -254,14 +265,16 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	var ping *pb.Ping
 	err = json.Unmarshal([]byte(body), &ping)
 	if err != nil {
+		hook.With(prometheus.Labels{"type": "unknown", "error": "unmarshal"}).Inc()
 		s.Log(fmt.Sprintf("Error unmarshalling JSON: %v", err))
 		return
 	}
 
-	ctx, cancel := utils.BuildContext("githubreceiver", "pingprocess")
+	ctx, cancel := utils.ManualContext("githubreceiver", "pingprocess", time.Minute, true)
 	defer cancel()
 	err = s.processPing(ctx, ping)
 	if err != nil {
+		hook.With(prometheus.Labels{"type": "unknown", "error": "ping"}).Inc()
 		s.Log(fmt.Sprintf("Error processing ping: %v", err))
 		s.webhookfail++
 	}
