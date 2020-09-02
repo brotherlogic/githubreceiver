@@ -234,13 +234,7 @@ func (s *Server) Mote(ctx context.Context, master bool) error {
 
 // GetState gets the state of the server
 func (s *Server) GetState() []*pbg.State {
-	return []*pbg.State{
-		&pbg.State{Key: "backends", Text: fmt.Sprintf("%v", s.backends)},
-		&pbg.State{Key: "pull_fails", Value: s.pullFails},
-		&pbg.State{Key: "pulls", Value: int64(len(s.pqueue))},
-		&pbg.State{Key: "web_hooks", Value: s.webhookcount},
-		&pbg.State{Key: "web_hook_fails", Value: s.webhookfail},
-	}
+	return []*pbg.State{}
 }
 
 var (
