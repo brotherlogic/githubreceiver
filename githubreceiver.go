@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/brotherlogic/goserver"
@@ -249,6 +250,12 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
+
+	if strings.HasPrefix(string(body), "payload") {
+		hook.With(prometheus.Labels{"type": "unknown", "error": "payload"}).Inc()
+		s.Log(fmt.Sprintf("Payload issue with http body"))
+		return
+	}
 
 	if err != nil {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "bodyread"}).Inc()
