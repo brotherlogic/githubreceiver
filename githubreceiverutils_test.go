@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	pbgh "github.com/brotherlogic/githubcard/proto"
-	"github.com/brotherlogic/keystore/client"
+	keystoreclient "github.com/brotherlogic/keystore/client"
 	"golang.org/x/net/context"
 
 	pb "github.com/brotherlogic/githubreceiver/proto"
@@ -172,7 +172,7 @@ func TestPullRequestAdd(t *testing.T) {
 		t.Fatalf("Error %v", err)
 	}
 
-	if tph.commits != 0 {
-		t.Errorf("Did not update pr")
+	if tph.commits != 1 {
+		t.Errorf("Did not commit pr")
 	}
 }
