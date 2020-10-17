@@ -278,7 +278,10 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "ping"}).Inc()
 		s.Log(fmt.Sprintf("Error processing ping: %v", err))
 		s.webhookfail++
+	} else {
+		hook.With(prometheus.Labels{"type": "unknown", "error": "nil"}).Inc()
 	}
+
 }
 
 func (s *Server) serveUp(port int32) {
