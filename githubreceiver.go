@@ -260,7 +260,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal([]byte(body), &ping)
 	if err != nil {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "unmarshal"}).Inc()
-		s.Log(fmt.Sprintf("Error unmarshalling JSON: %v", err))
+		s.Log(fmt.Sprintf("Error unmarshalling JSON: %v -> %v", err, string(body)))
 		return
 	}
 
