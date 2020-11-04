@@ -22,7 +22,7 @@ message Ping {
   PullRequest pull_request = 12;
   int32 number = 13;
   repeated Branch branches = 14;
-  CheckRun check = 15;
+  CheckRun check_run = 15;
 }
 
 message CheckSuite {
