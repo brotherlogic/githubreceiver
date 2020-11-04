@@ -250,6 +250,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
+	s.Log(fmt.Sprintf("Read: %v", string(body)))
 
 	if strings.HasPrefix(string(body), "payload") {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "payload"}).Inc()
