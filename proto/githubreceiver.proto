@@ -32,6 +32,7 @@ message CheckSuite {
 message CheckRun {
   string name = 1;
   CheckSuite check_suite = 2;
+  string conclusion = 3;
 }
 
 message Branch {
