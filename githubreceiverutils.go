@@ -58,7 +58,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 
 	if len(ping.GetCheckRun().GetName()) > 0 {
 		s.Log(fmt.Sprintf("Updating CheckRunPR %v", ping))
-		return s.pullRequester.updatePullRequest(ctx, ping.Sha, "", ping.GetCheckRun().GetName(), ping.State == "success")
+		return s.pullRequester.updatePullRequest(ctx, ping.Sha, "", ping.GetCheckRun().GetName(), ping.GetCheckRun().GetConclusion() == "success")
 	}
 
 	s.Log(fmt.Sprintf("Skipping processing of %v", ping))
