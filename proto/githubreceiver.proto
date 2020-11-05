@@ -33,6 +33,7 @@ message CheckRun {
   string name = 1;
   CheckSuite check_suite = 2;
   string conclusion = 3;
+  string head_sha = 4;
 }
 
 message Branch {
