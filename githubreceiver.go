@@ -271,7 +271,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.Log(fmt.Sprintf("got %v from %v", ping, string(body)))
+	s.DLog(context.Background(), fmt.Sprintf("got %v from %v", ping, string(body)))
 
 	ctx, cancel := utils.ManualContext("githubreceiver", time.Minute)
 	defer cancel()
