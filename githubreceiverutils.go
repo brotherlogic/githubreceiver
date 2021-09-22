@@ -10,10 +10,10 @@ import (
 )
 
 func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
-	if ping.Ref == "refs/heads/master" {
+	if ping.Ref == "refs/heads/master" || ping.Ref == "refs/heads/main" {
 		s.Log(fmt.Sprintf("Starting build for %v", ping.Repository.Name))
-		s.builder.build(ctx, ping.Repository.Name, ping.Repository.FullName)
-		return nil
+		err := s.builder.build(ctx, ping.Repository.Name, ping.Repository.FullName)
+		return err
 	}
 
 	if ping.Action == "opened" && ping.Number == 0 {
