@@ -141,21 +141,40 @@ func (p *prodGithub) createPullRequest(ctx context.Context, job, branch, title s
 }
 
 type prodBuilder struct {
-	dial func(ctx context.Context, server string) (*grpc.ClientConn, error)
+	dial    func(server string) (*grpc.ClientConn, error)
+	dialAll func(ctx context.Context, server string) ([]string, error)
 }
 
 func (p *prodBuilder) build(ctx context.Context, name, fullName string) error {
-	conn, err := p.dial(ctx, "buildserver")
+	servers, err := p.dialAll(ctx, "buildserver")
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
+	done32 := false
+	done64 := false
+	for _, server := range servers {
+		conn, err := p.dial(server)
+		if err == nil {
+			client := pbbs.NewBuildServiceClient(conn)
+			if !done32 {
+				_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/" + fullName}, BitSize: 32})
+				if err == nil {
+					done32 = true
+				}
+			}
+			if !done64 {
+				_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/" + fullName}, BitSize: 64})
+				if err == nil {
+					done64 = true
+				}
+			}
+		}
+	}
 
-	client := pbbs.NewBuildServiceClient(conn)
-	_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/" + fullName}})
-
-	return err
-
+	if done32 && done64 {
+		return nil
+	}
+	return fmt.Errorf("Unable to build 32: %v and 64: %v", done32, done64)
 }
 
 const (
@@ -184,7 +203,7 @@ func Init() *Server {
 		config:   &pb.Config{TimeBetweenQueueProcess: 60},
 		backends: make(map[string]int),
 	}
-	s.builder = &prodBuilder{dial: s.FDialServer}
+	s.builder = &prodBuilder{dial: s.FDial, dialAll: s.FFind}
 	s.github = &prodGithub{dial: s.FDialServer}
 	s.pullRequester = &prodPullRequester{dial: s.FDialServer, RaiseIssue: s.RaiseIssue}
 	s.pqueue = make([]pull, 0)
