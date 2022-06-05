@@ -155,6 +155,8 @@ func (p *prodBuilder) build(ctx context.Context, name, fullName string) error {
 	for _, server := range servers {
 		conn, err := p.dial(server)
 		if err == nil {
+			defer conn.Close()
+
 			client := pbbs.NewBuildServiceClient(conn)
 			if !done32 {
 				_, err = client.Build(ctx, &pbbs.BuildRequest{Job: &pbgbs.Job{Name: name, GoPath: "github.com/" + fullName}, BitSize: 32})
