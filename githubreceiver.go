@@ -330,9 +330,9 @@ func main() {
 		log.SetOutput(ioutil.Discard)
 	}
 	server := Init()
-	server.PrepServer()
+	server.PrepServer("githubreceiver")
 	server.Register = server
-	err := server.RegisterServerV2("githubreceiver", false, true)
+	err := server.RegisterServerV2(false)
 	if err != nil {
 		return
 	}
