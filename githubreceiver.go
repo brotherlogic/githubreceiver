@@ -269,18 +269,21 @@ var (
 func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	s.webhookcount++
 
+	ctx, cancel := utils.ManualContext("ghrwh", time.Minute)
+	defer cancel()
+
 	defer r.Body.Close()
 	body, err := ioutil.ReadAll(r.Body)
 
 	if strings.HasPrefix(string(body), "payload") {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "payload"}).Inc()
-		s.Log(fmt.Sprintf("Payload issue with http body"))
+		s.CtxLog(ctx, fmt.Sprintf("Payload issue with http body"))
 		return
 	}
 
 	if err != nil {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "bodyread"}).Inc()
-		s.Log(fmt.Sprintf("Error reading body: %v", err))
+		s.CtxLog(ctx, fmt.Sprintf("Error reading body: %v", err))
 		return
 	}
 
@@ -288,18 +291,16 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal([]byte(body), &ping)
 	if err != nil {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "unmarshal"}).Inc()
-		s.Log(fmt.Sprintf("Error unmarshalling JSON: %v -> %v", err, string(body)))
+		s.CtxLog(ctx, fmt.Sprintf("Error unmarshalling JSON: %v -> %v", err, string(body)))
 		return
 	}
 
 	s.DLog(context.Background(), fmt.Sprintf("got %v from %v", ping, string(body)))
 
-	ctx, cancel := utils.ManualContext("githubreceiver", time.Minute)
-	defer cancel()
 	err = s.processPing(ctx, ping)
 	if err != nil {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "ping"}).Inc()
-		s.Log(fmt.Sprintf("Error processing ping: %v", err))
+		s.CtxLog(ctx, fmt.Sprintf("Error processing ping: %v", err))
 		s.webhookfail++
 	} else {
 		hook.With(prometheus.Labels{"type": "unknown", "error": "nil"}).Inc()
