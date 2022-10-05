@@ -295,7 +295,7 @@ func (s *Server) githubwebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.DLog(context.Background(), fmt.Sprintf("got %v from %v", ping, string(body)))
+	s.DLog(ctx, fmt.Sprintf("got %v from %v", ping, string(body)))
 
 	err = s.processPing(ctx, ping)
 	if err != nil {
