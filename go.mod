@@ -7,7 +7,7 @@ require (
 	github.com/brotherlogic/discovery v0.0.0-20221017170645-5faeb7493c8b // indirect
 	github.com/brotherlogic/githubcard v0.0.0-20221010180453-f2899b2cecbd
 	github.com/brotherlogic/gobuildslave v0.0.0-20221013043639-a2ec1f306ba6
-	github.com/brotherlogic/goserver v0.0.0-20221017152236-54e4e3c5c290
+	github.com/brotherlogic/goserver v0.0.0-20221017174255-733572468b6b
 	github.com/brotherlogic/keystore v0.0.0-20220919100110-299b209de552
 	github.com/brotherlogic/pullrequester v0.0.0-20221017153108-07669d7769ff
 	github.com/golang/protobuf v1.5.2
