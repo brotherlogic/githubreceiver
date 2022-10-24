@@ -48,8 +48,8 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		}*/
 
 	if ping.RefType == "branch" {
-		s.CtxLog(ctx, fmt.Sprintf("Building pull request for %v", ping.Ref))
-		s.github.createPullRequest(ctx, ping.Repository.Name, ping.Ref, ping.Ref)
+		err := s.github.createPullRequest(ctx, ping.Repository.Name, ping.Ref, ping.Ref)
+		s.CtxLog(ctx, fmt.Sprintf("Building pull request for %v -> %v", ping.Ref, err))
 		return nil
 	}
 
