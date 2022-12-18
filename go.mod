@@ -3,7 +3,7 @@ module github.com/brotherlogic/githubreceiver
 go 1.19
 
 require (
-	github.com/brotherlogic/buildserver v0.0.0-20221218011815-4a54a77ca91f
+	github.com/brotherlogic/buildserver v0.0.0-20221218013906-7becdfae3790
 	github.com/brotherlogic/githubcard v0.0.0-20221211032956-b40a80581d2d
 	github.com/brotherlogic/gobuildslave v0.0.0-20221218001612-fb186266f856
 	github.com/brotherlogic/goserver v0.0.0-20221217002224-0ba5c0213be1
