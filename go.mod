@@ -3,12 +3,12 @@ module github.com/brotherlogic/githubreceiver
 go 1.19
 
 require (
-	github.com/brotherlogic/buildserver v0.0.0-20221218013906-7becdfae3790
-	github.com/brotherlogic/githubcard v0.0.0-20221211032956-b40a80581d2d
-	github.com/brotherlogic/gobuildslave v0.0.0-20221218001612-fb186266f856
+	github.com/brotherlogic/buildserver v0.0.0-20221225021229-838a7162cae8
+	github.com/brotherlogic/githubcard v0.0.0-20221218045542-3f6d59d6597e
+	github.com/brotherlogic/gobuildslave v0.0.0-20221218021644-eee25e8e2c8b
 	github.com/brotherlogic/goserver v0.0.0-20221217002224-0ba5c0213be1
-	github.com/brotherlogic/keystore v0.0.0-20221217221704-68000096bdab
-	github.com/brotherlogic/pullrequester v0.0.0-20221211030629-223f605b6140
+	github.com/brotherlogic/keystore v0.0.0-20221218025925-612b2a89a337
+	github.com/brotherlogic/pullrequester v0.0.0-20221218051550-e2040dde1ed8
 	github.com/golang/protobuf v1.5.2
 	github.com/prometheus/client_golang v1.14.0
 	golang.org/x/net v0.4.0
@@ -18,11 +18,11 @@ require (
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/brotherlogic/datastore v0.0.0-20221218012842-a82da3a46c4d // indirect
-	github.com/brotherlogic/discovery v0.0.0-20221218012515-3820bc4fa7a6 // indirect
-	github.com/brotherlogic/dstore v0.0.0-20221218012756-2b2a9f061cfd // indirect
-	github.com/brotherlogic/lock v0.0.0-20221211025725-c7b14345e31e // indirect
-	github.com/brotherlogic/logging v0.0.0-20221211023411-3e56b8c66cc1 // indirect
+	github.com/brotherlogic/datastore v0.0.0-20221218033804-2b522d232a2f // indirect
+	github.com/brotherlogic/discovery v0.0.0-20221218025922-f7f0f4bfa032 // indirect
+	github.com/brotherlogic/dstore v0.0.0-20221218055338-99a21b17382c // indirect
+	github.com/brotherlogic/lock v0.0.0-20221218033100-bd36d25fa713 // indirect
+	github.com/brotherlogic/logging v0.0.0-20221218033705-1c0d872684e5 // indirect
 	github.com/brotherlogic/monitor v0.0.0-20221025152653-c10877c5f9e6 // indirect
 	github.com/brotherlogic/versionserver v0.0.0-20221025154054-c9bcd41be2f2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
@@ -32,7 +32,7 @@ require (
 	github.com/mitchellh/go-ps v1.0.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.39.0 // indirect
-	github.com/prometheus/procfs v0.8.0 // indirect
+	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/struCoder/pidusage v0.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.37.0 // indirect
 	go.opentelemetry.io/otel v1.11.2 // indirect
