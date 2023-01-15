@@ -2,12 +2,21 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"golang.org/x/net/context"
 
 	pbgh "github.com/brotherlogic/githubcard/proto"
 	pb "github.com/brotherlogic/githubreceiver/proto"
 )
+
+func getFromUrl(url string) (int32, string) {
+	elems := strings.Split(url, "/")
+	num, _ := strconv.ParseInt(elems[6], 10, 32)
+	service := elems[4]
+	return int32(num), service
+}
 
 func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	if ping.Ref == "refs/heads/master" || ping.Ref == "refs/heads/main" {
@@ -34,7 +43,14 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	if ping.Action == "closed" {
 		s.CtxLog(ctx, fmt.Sprintf("Deleting issue %v", ping.Issue))
 		if ping != nil && ping.Issue != nil {
-			s.github.delete(ctx, &pbgh.Issue{Title: ping.Issue.Title, Url: ping.Issue.Url, Origin: pbgh.Issue_FROM_RECEIVER})
+			number, service := getFromUrl(ping.Issue.Url)
+			s.github.delete(ctx, &pbgh.Issue{
+				Title:   ping.Issue.Title,
+				Url:     ping.Issue.Url,
+				Origin:  pbgh.Issue_FROM_RECEIVER,
+				Number:  number,
+				Service: service,
+			})
 		}
 		return nil
 	}
