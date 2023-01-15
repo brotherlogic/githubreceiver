@@ -13,8 +13,8 @@ import (
 
 func getFromUrl(url string) (int32, string) {
 	elems := strings.Split(url, "/")
-	num, _ := strconv.ParseInt(elems[6], 10, 32)
-	service := elems[4]
+	num, _ := strconv.ParseInt(elems[7], 10, 32)
+	service := elems[5]
 	return int32(num), service
 }
 
