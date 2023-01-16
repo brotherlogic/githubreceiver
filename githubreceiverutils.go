@@ -26,9 +26,9 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 	}
 
 	if ping.Action == "opened" && ping.Number == 0 {
-		s.CtxLog(ctx, fmt.Sprintf("Adding issue %v", ping.Issue))
 		pieces := strings.Split(ping.Url, "/")
 		num, _ := strconv.ParseInt(pieces[7], 10, 32)
+		s.CtxLog(ctx, fmt.Sprintf("Adding issue %v (%v and %v)", ping.Issue, pieces[5], pieces[7]))
 		s.github.add(ctx, &pbgh.Issue{Title: ping.Issue.Title, Number: int32(num), Service: pieces[5], Url: ping.Issue.Url, Origin: pbgh.Issue_FROM_RECEIVER})
 		return nil
 	}
