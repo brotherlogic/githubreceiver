@@ -62,4 +62,5 @@ message Repository {
 message Issue {
   string url = 1;
   string title = 2;
+  PullRequest pull_request = 3;
 }

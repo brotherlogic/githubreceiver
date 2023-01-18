@@ -25,7 +25,7 @@ func (s *Server) processPing(ctx context.Context, ping *pb.Ping) error {
 		return err
 	}
 
-	if ping.Action == "opened" && ping.Number == 0 {
+	if ping.Action == "opened" && ping.Number == 0 && ping.GetIssue().GetPullRequest().GetUrl() == "" {
 		pieces := strings.Split(ping.Issue.Url, "/")
 		s.CtxLog(ctx, fmt.Sprintf("Adding issue %v (%v and %v)", ping.Issue, pieces[5], pieces[7]))
 		num, _ := strconv.ParseInt(pieces[7], 10, 32)
