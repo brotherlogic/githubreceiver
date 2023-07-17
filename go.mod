@@ -19,8 +19,8 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/brotherlogic/datastore v0.0.0-20230712045316-1e4c50e099f8 // indirect
 	github.com/brotherlogic/discovery v0.0.0-20230527174721-899846f80b8c // indirect
-	github.com/brotherlogic/dstore v0.0.0-20230717145702-5846ccf3c635 // indirect
-	github.com/brotherlogic/lock v0.0.0-20230717125706-4346d96fee93 // indirect
+	github.com/brotherlogic/dstore v0.0.0-20230717230048-5ec38076aeee // indirect
+	github.com/brotherlogic/lock v0.0.0-20230717220301-1a3d421aac2d // indirect
 	github.com/brotherlogic/logging v0.0.0-20230711202906-2567a1a70ec6 // indirect
 	github.com/brotherlogic/monitor v0.0.0-20221025152653-c10877c5f9e6 // indirect
 	github.com/brotherlogic/versionserver v0.0.0-20221025154054-c9bcd41be2f2 // indirect
@@ -34,5 +34,5 @@ require (
 	github.com/struCoder/pidusage v0.2.1 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230717213848-3f92550aa753 // indirect
 )
