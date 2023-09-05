@@ -10,7 +10,7 @@ require (
 	github.com/brotherlogic/keystore v0.0.0-20230901231139-d77459255d7a
 	github.com/brotherlogic/pullrequester v0.0.0-20230108092634-f40806c0b204
 	github.com/prometheus/client_golang v1.16.0
-	golang.org/x/net v0.14.0
+	golang.org/x/net v0.15.0
 	google.golang.org/grpc v1.57.0
 	google.golang.org/protobuf v1.31.0
 )
