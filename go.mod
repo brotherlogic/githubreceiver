@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/brotherlogic/buildserver v0.0.0-20230906000113-d21a123722d8
-	github.com/brotherlogic/githubcard v0.0.0-20230905230001-f5bb2d59356d
-	github.com/brotherlogic/gobuildslave v0.0.0-20230906000243-24c5cd7e2e69
+	github.com/brotherlogic/githubcard v0.0.0-20230906032917-8ad13739a2bd
+	github.com/brotherlogic/gobuildslave v0.0.0-20230906033756-7695926be4bc
 	github.com/brotherlogic/goserver v0.0.0-20230726200050-779ae6811580
 	github.com/brotherlogic/keystore v0.0.0-20230901231139-d77459255d7a
 	github.com/brotherlogic/pullrequester v0.0.0-20230108092634-f40806c0b204
@@ -21,7 +21,7 @@ require (
 	github.com/brotherlogic/discovery v0.0.0-20230902193302-520563d002e3 // indirect
 	github.com/brotherlogic/dstore v0.0.0-20230902202942-a8b8333265ee // indirect
 	github.com/brotherlogic/lock v0.0.0-20230906014512-61945543046d // indirect
-	github.com/brotherlogic/logging v0.0.0-20230906031637-7ac2fad7303f // indirect
+	github.com/brotherlogic/logging v0.0.0-20230906034004-1fab9e23479e // indirect
 	github.com/brotherlogic/monitor v0.0.0-20221025152653-c10877c5f9e6 // indirect
 	github.com/brotherlogic/versionserver v0.0.0-20221025154054-c9bcd41be2f2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
