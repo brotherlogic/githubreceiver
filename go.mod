@@ -7,7 +7,7 @@ require (
 	github.com/brotherlogic/githubcard v0.0.0-20231108234837-83d97d88c137
 	github.com/brotherlogic/gobuildslave v0.0.0-20231110054949-269f8cb8bc78
 	github.com/brotherlogic/goserver v0.0.0-20230726200050-779ae6811580
-	github.com/brotherlogic/keystore v0.0.0-20231105171731-fa878651229f
+	github.com/brotherlogic/keystore v0.0.0-20231112195839-4b61dfa63b0a
 	github.com/brotherlogic/pullrequester v0.0.0-20230108092634-f40806c0b204
 	github.com/prometheus/client_golang v1.17.0
 	golang.org/x/net v0.18.0
