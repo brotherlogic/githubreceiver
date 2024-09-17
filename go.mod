@@ -11,7 +11,7 @@ require (
 	github.com/brotherlogic/goserver v0.0.0-20240826215223-fccbac46b3d4
 	github.com/brotherlogic/keystore v0.0.0-20240508161349-814b3200b126
 	github.com/brotherlogic/pullrequester v0.0.0-20240723235824-97ad74c1a00b
-	github.com/prometheus/client_golang v1.20.3
+	github.com/prometheus/client_golang v1.20.4
 	golang.org/x/net v0.29.0
 	google.golang.org/grpc v1.66.2
 	google.golang.org/protobuf v1.34.2
