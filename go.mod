@@ -6,7 +6,7 @@ toolchain go1.23.0
 
 require (
 	github.com/brotherlogic/buildserver v0.0.0-20240914035132-8ab7977b9380
-	github.com/brotherlogic/githubcard v0.0.0-20240917143909-1b83476fe7da
+	github.com/brotherlogic/githubcard v0.0.0-20240917144317-8995ee241545
 	github.com/brotherlogic/gobuildslave v0.0.0-20240916033825-be73f9f949be
 	github.com/brotherlogic/goserver v0.0.0-20240826215223-fccbac46b3d4
 	github.com/brotherlogic/keystore v0.0.0-20240508161349-814b3200b126
