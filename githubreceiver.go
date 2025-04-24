@@ -32,7 +32,7 @@ type pullRequester interface {
 
 type prodPullRequester struct {
 	dial       func(ctx context.Context, server string) (*grpc.ClientConn, error)
-	RaiseIssue func(title, body string)
+	RaiseIssue func(title, body string, labels ...string)
 }
 
 func (p *prodPullRequester) updatePullRequest(ctx context.Context, sha, name, checkName string, pass bool) error {
@@ -184,7 +184,7 @@ const (
 	KEY = "/github.com/brotherlogic/githubreceiver/config"
 )
 
-//Server main server type
+// Server main server type
 type Server struct {
 	*goserver.GoServer
 	config        *pb.Config
