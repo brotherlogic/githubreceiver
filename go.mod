@@ -4,7 +4,7 @@ go 1.23.2
 
 require (
 	github.com/brotherlogic/buildserver v0.0.0-20250602201412-6457418ba6bb
-	github.com/brotherlogic/githubcard v0.0.0-20250602204331-7262160c91b9
+	github.com/brotherlogic/githubcard v0.0.0-20250602211352-1f23ad14b034
 	github.com/brotherlogic/gobuildslave v0.0.0-20250509192246-2e37750a2b43
 	github.com/brotherlogic/goserver v0.0.0-20250123145056-95c6fbb2310a
 	github.com/brotherlogic/keystore v0.0.0-20240508161349-814b3200b126
