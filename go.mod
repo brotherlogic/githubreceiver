@@ -3,13 +3,13 @@ module github.com/brotherlogic/githubreceiver
 go 1.24.4
 
 require (
-	github.com/brotherlogic/buildserver v0.0.0-20250721171925-3f873ed0ea91
+	github.com/brotherlogic/buildserver v0.0.0-20250728173008-3fba66467a66
 	github.com/brotherlogic/githubcard v0.0.0-20250725233128-c86783fd3af4
 	github.com/brotherlogic/gobuildslave v0.0.0-20250617150904-f41a1af90c2d
 	github.com/brotherlogic/goserver v0.0.0-20250608182006-4ace595931a5
 	github.com/brotherlogic/keystore v0.0.0-20240508161349-814b3200b126
 	github.com/brotherlogic/pullrequester v0.0.0-20240723235824-97ad74c1a00b
-	github.com/prometheus/client_golang v1.22.0
+	github.com/prometheus/client_golang v1.23.0
 	golang.org/x/net v0.42.0
 	google.golang.org/grpc v1.74.2
 	google.golang.org/protobuf v1.36.6
@@ -35,5 +35,5 @@ require (
 	github.com/struCoder/pidusage v0.2.1 // indirect
 	golang.org/x/sys v0.34.0 // indirect
 	golang.org/x/text v0.27.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250721164621-a45f3dfb1074 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250728155136-f173205681a0 // indirect
 )
